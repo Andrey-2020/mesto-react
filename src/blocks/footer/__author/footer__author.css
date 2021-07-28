@@ -1,6 +1,7 @@
 .footer__author {
     max-width: 880px;
-    margin: 67px auto 60px auto;
+    margin: 67px auto 0 auto;
+    padding-bottom: 60px;
     font-family: "Inter", "Arial ", sans-serif;
     font-style: normal;
     font-weight: normal;
@@ -11,7 +12,8 @@
 
 @media screen and (min-width: 320px) and (max-width: 880px) {
     .footer__author {
-        margin: 48px auto 36px auto;
+        margin: 48px auto 0 auto;
+        padding-bottom: 36px;
         width: 88.125%;
         font-size: 14px;
         line-height: 17px;

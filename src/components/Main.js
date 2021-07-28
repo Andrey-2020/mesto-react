@@ -7,19 +7,15 @@ function Main(props) {
     const [userAvatar, setUserAvatar] = React.useState();
     const [cards, setCards] = React.useState([]);
     React.useEffect(() => {
-        api.updateUserTask({
-            name: `${userName}`,
-            about: `${userDescription}`,
-            avatar: `${userAvatar}`
-        }, '')
-            .then((userData) => {
-                setUserName(userData.name);
-                setUserDescription(userData.about);
-                setUserAvatar(userData.avatar);
+        api.getUserTasks()
+            .then((userInform) => {
+                setUserName(userInform.name);
+                setUserDescription(userInform.about);
+                setUserAvatar(userInform.avatar);
 
             })
             .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
-    });
+    },[]);
 
     React.useEffect(() => {
        api.getCardTasks()
@@ -27,7 +23,7 @@ function Main(props) {
                 setCards(cards);
             })
             .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
-    })
+    },[])
 
     return (
         <main>

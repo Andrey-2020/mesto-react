@@ -4,8 +4,9 @@ function PopupWithForm(props) {
         <section className={`popup popup_type_${props.name} ${props.isOpen ? 'popup_opened' : ''}`}>
             <div className={`popup__container popup__container_type_${props.name}`}>
                 <h2 className={`popup__heading popup__heading_type_${props.name}`}>{props.title}</h2>
-                <form className={`form form_type_${props.name}`} name={`form-${props.name}`} noValidate>
+                <form className={`form form_type_${props.name}`} name={`form-${props.name}`}>
                     {props.children}
+                    <button className="form__button" type="submit" aria-label="submit">{props.buttonText}</button>
                 </form>
                 <button className="popup__button" type="button" aria-label="close" onClick={props.onClose}></button>
             </div>

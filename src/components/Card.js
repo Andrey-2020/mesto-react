@@ -1,12 +1,13 @@
-import Delete from '../images/Delete.svg';
+
+import remove from '../images/Delete.svg';
 function Card(props) {
     function handleClick() {
         props.onCardClick(props.card);
     }
     return (
         <li className="place">
-            <div className="place__image" style={{ backgroundImage: `url(${props.card.link})` }} alt={props.card.name} onClick={handleClick} ></div>
-            <img className="place__delete" src={Delete} alt="Удалить" />
+            <div className="place__image" style={{ backgroundImage: `url(${props.card.link})` }} onClick={handleClick} ></div>
+            <img className="place__delete" src={remove} alt="Удалить" />
             <div className="place__info">
                 <h2 className="place__title">{props.card.name}</h2>
                 <div className="place__like-container">
