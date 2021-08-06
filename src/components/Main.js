@@ -1,54 +1,25 @@
 import React from 'react';
-import Card from './Card'
-import api from '../utils/Api';
+import { CurrentUserContext } from '../contexts/CurrentUserContext'
 function Main(props) {
-    const [userName, setUserName] = React.useState('Жак-Ив Кусто');
-    const [userDescription, setUserDescription] = React.useState('Исследователь океана');
-    const [userAvatar, setUserAvatar] = React.useState();
-    const [cards, setCards] = React.useState([]);
-    React.useEffect(() => {
-        api.getUserTasks()
-            .then((userInform) => {
-                setUserName(userInform.name);
-                setUserDescription(userInform.about);
-                setUserAvatar(userInform.avatar);
 
-            })
-            .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
-    },[]);
-
-    React.useEffect(() => {
-       api.getCardTasks()
-            .then((cards) => {
-                setCards(cards);
-            })
-            .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
-    },[])
+    const currentUser = React.useContext(CurrentUserContext);
 
     return (
         <main>
             <section className="profile">
                 <div className="profile__content">
-                    <div className="profile__cover-avatar" onClick={props.onEditAvatar} style={{ backgroundImage: `url(${userAvatar})` }}>
+                    <div className="profile__cover-avatar" onClick={props.onEditAvatar} style={{ backgroundImage: `url(${currentUser.avatar})` }}>
                         {/* <img  className="profile__avatar"  alt="Аватар"  /> */}
                     </div>
                     <div className="profile__info">
                         <div className="profile__text">
-                            <h1 className="profile__autor">{userName}</h1>
+                            <h1 className="profile__autor">{currentUser.name}</h1>
                             <button onClick={props.onEditProfile} className="profile__button profile__button_edit" type="button" aria-label="edit"></button>
                         </div>
-                        <p className="profile__profession">{userDescription}</p>
+                        <p className="profile__profession">{currentUser.about}</p>
                     </div>
                 </div>
                 <button onClick={props.onAddPlace} className="profile__button profile__button_add" type="button" aria-label="add"></button>
-
-            </section>
-            <section>
-                <ul className="places">
-                    {cards.map((card) => (
-                        <Card card={card} key={card._id} onCardClick={props.onCardClick} />
-                    ))}
-                </ul>
             </section>
         </main>
     );
