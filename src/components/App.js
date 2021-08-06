@@ -7,7 +7,6 @@ import ImagePopup from './ImagePopup'
 import EditProfilePopup from './EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup'
 import AddPlacePopup from './AddPlacePopup'
-import Card from './Card'
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
 import api from '../utils/api';
 function App() {
@@ -98,12 +97,7 @@ function App() {
         <div className="root">
             <CurrentUserContext.Provider value={currentUser}>
                 <Header />
-                <Main onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} />
-                <ul className="places">
-                    {cards.map((card) => (
-                        <Card card={card} key={card._id} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
-                    ))}
-                </ul>
+                <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
                 <Footer />
                 <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
                 <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} buttonText={"Создать"} onAddCard={handleAddCard} />

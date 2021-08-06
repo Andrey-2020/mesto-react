@@ -1,4 +1,4 @@
-import { options } from '../utils/constant.js';
+import { options } from './constant';
 class Api {
     constructor(config) {
         this.url = config.url;
