@@ -1,4 +1,4 @@
-import { options } from './constant';
+import { options } from './constant' ;
 class Api {
     constructor(config) {
         this.url = config.url;
@@ -97,5 +97,4 @@ class Api {
     }
 }
 const api = new Api(options);
-
 export default api;
