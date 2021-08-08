@@ -2,7 +2,7 @@ import React from 'react';
 import Header from './Header'
 import Main from './Main'
 import Footer from './Footer'
-import PopupWithForm from './PopupWithForm'
+import PopupWithConfirm from './PopupWithConfirm'
 import ImagePopup from './ImagePopup'
 import EditProfilePopup from './EditProfilePopup'
 import EditAvatarPopup from './EditAvatarPopup'
@@ -14,16 +14,12 @@ function App() {
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
     const [isEditImagePopupOpen, setIsEditImagePopupOpen] = React.useState(false);
+    const [isConfirmPopupOpen, setIsConfirmPopupOpen] = React.useState(false);
+    const [idDeleteCard, setIdDeleteCard] = React.useState('');
     const [selectedCard, setSelectedCard] = React.useState({ name: '', link: '' });
     const [currentUser, setCurrentUser] = React.useState({ name: '', about: '', avatar: '', _id: '' })
     const [cards, setCards] = React.useState([]);
-    React.useEffect(() => {
-        api.getUserTasks()
-            .then((userInform) => {
-                setCurrentUser({ name: userInform.name, about: userInform.about, avatar: userInform.avatar, _id: userInform._id });
-            })
-            .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
-    }, []);
+
 
     function handleEditAvatarClick() {
         setIsEditAvatarPopupOpen(true);
@@ -33,6 +29,10 @@ function App() {
     }
     function handleAddPlaceClick() {
         setIsAddPlacePopupOpen(true);
+    }
+    function handleConfirmDeleteClick(deleteCard) {
+        setIsConfirmPopupOpen(true);
+        setIdDeleteCard(deleteCard._id);
     }
 
     function handleCardClick(card) {
@@ -46,36 +46,39 @@ function App() {
         setIsEditAvatarPopupOpen(false);
         setIsEditProfilePopupOpen(false);
         setIsEditImagePopupOpen(false);
+        setIsConfirmPopupOpen(false);
+        setIdDeleteCard('');
         setSelectedCard({ name: '', link: '' });
     }
     function handleUpdateUser(userData) {
         api.updateUserTask(userData, '')
             .then(() => {
-                setCurrentUser({ name: userData.name, about: userData.about, avatar: currentUser.avatar, _id: currentUser._id });
+                setCurrentUser({ name: userData.name, about: userData.about, avatar: currentUser.avatar, _id: currentUser._id })
                 closeAllPopups();
-            }
-            )
+            })
+            .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
+
     }
     function handleUpdateAvatar(avatarData) {
         api.updateUserTask(avatarData, 'avatar')
             .then(() => {
                 setCurrentUser({ name: currentUser.name, about: currentUser.about, avatar: avatarData.avatar, _id: currentUser._id });
                 closeAllPopups();
-            }, '')
-    }
-
-    function handleCardDelete(deleteCard) {
-        api.deleteTask(deleteCard._id).then(() => {
-            setCards(cards.filter((card) => { return card._id !== deleteCard._id }));
-        })
-    }
-    React.useEffect(() => {
-        api.getCardTasks()
-            .then((cards) => {
-                setCards(cards);
             })
             .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
+    }
+
+    React.useEffect(() => {
+        Promise.all([api.getUserTasks(), api.getCardTasks()])
+            .then(([userInform, cards]) => {
+                setCurrentUser(userInform);
+                setCards(cards);
+            })
+            .catch((err) => {
+                console.log('Ошибка. Запрос не выполнен: ', err);
+            })
     }, [])
+
     function handleCardLike(card) {
         // Снова проверяем, есть ли уже лайк на этой карточке
         const isLiked = card.likes.some(i => i._id === currentUser._id);
@@ -93,15 +96,23 @@ function App() {
             })
             .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
     }
+    function handleCardDelete() {
+        api.deleteTask(idDeleteCard)
+            .then(() => {
+                setCards(cards.filter((card) => { return card._id !== idDeleteCard }));
+                closeAllPopups();
+            })
+            .catch(err => console.log('Ошибка. Запрос не выполнен: ', err))
+    }
     return (
         <div className="root">
             <CurrentUserContext.Provider value={currentUser}>
                 <Header />
-                <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onCardDelete={handleCardDelete} />
+                <Main cards={cards} onEditProfile={handleEditProfileClick} onAddPlace={handleAddPlaceClick} onEditAvatar={handleEditAvatarClick} onCardClick={handleCardClick} onCardLike={handleCardLike} onDeleteClick={handleConfirmDeleteClick} />
                 <Footer />
                 <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} />
                 <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} buttonText={"Создать"} onAddCard={handleAddCard} />
-                <PopupWithForm name="confirm" title="Вы уверены?" buttonText={"Да"} />
+                <PopupWithConfirm isOpen={isConfirmPopupOpen} onClose={closeAllPopups} onDeleteCard={handleCardDelete} />
                 <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} onUpdateAvatar={handleUpdateAvatar} />
                 <ImagePopup card={selectedCard} isOpen={isEditImagePopupOpen} onClose={closeAllPopups} />
             </CurrentUserContext.Provider>

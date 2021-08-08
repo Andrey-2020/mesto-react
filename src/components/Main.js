@@ -10,7 +10,6 @@ function Main(props) {
             <section className="profile">
                 <div className="profile__content">
                     <div className="profile__cover-avatar" onClick={props.onEditAvatar} style={{ backgroundImage: `url(${currentUser.avatar})` }}>
-                        {/* <img  className="profile__avatar"  alt="Аватар"  /> */}
                     </div>
                     <div className="profile__info">
                         <div className="profile__text">
@@ -25,7 +24,7 @@ function Main(props) {
             <section>
                 <ul className="places">
                     {props.cards.map((card) => (
-                        <Card card={card} key={card._id} onCardClick={props.onCardClick} onCardLike={props.onCardLike} onCardDelete={props.onCardDelete} />
+                        <Card card={card} key={card._id} onCardClick={props.onCardClick} onCardLike={props.onCardLike} onDeleteClick={props.onDeleteClick} />
                     ))}
                 </ul>
             </section>

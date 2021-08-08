@@ -1,40 +1,39 @@
 import React from 'react';
 import remove from '../images/Delete.svg';
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
-
-function Card(props) {
+function Card({ card, onCardClick, onCardLike, onDeleteClick }) {
     const currentUser = React.useContext(CurrentUserContext);
     function handleClick() {
-        props.onCardClick(props.card);
+        onCardClick(card);
     }
     function handleLikeClick() {
-        props.onCardLike(props.card);
+        onCardLike(card);
     }
     function handleDeleteClick() {
-        props.onCardDelete(props.card);
+        onDeleteClick(card);
     }
     // Определяем, являемся ли мы владельцем текущей карточки
-    const isOwn = props.card.owner._id === currentUser._id;
+    const isOwn = card.owner._id === currentUser._id;
 
     // Создаём переменную, которую после зададим в `className` для кнопки удаления
     const cardDeleteButtonClassName = (
         `place__delete ${isOwn ? 'card__delete-button_visible' : 'place__delete-none'}`
     );
     // Определяем, есть ли у карточки лайк, поставленный текущим пользователем
-    const isLiked = props.card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i._id === currentUser._id);
 
     // Создаём переменную, которую после зададим в `className` для кнопки лайка
     const cardLikeButtonClassName = (`place__like ${isLiked ? 'place__like_active' : ''}`);
 
     return (
         <li className="place">
-            <div className="place__image" style={{ backgroundImage: `url(${props.card.link})` }} onClick={handleClick} ></div>
+            <div className="place__image" style={{ backgroundImage: `url(${card.link})` }} onClick={handleClick} ></div>
             <img className={cardDeleteButtonClassName} src={remove} alt="Удалить" onClick={handleDeleteClick} />
             <div className="place__info">
-                <h2 className="place__title">{props.card.name}</h2>
+                <h2 className="place__title">{card.name}</h2>
                 <div className="place__like-container">
                     <button className={cardLikeButtonClassName} type="button" aria-label="like" onClick={handleLikeClick} ></button>
-                    <div className="place__number-of-like">{props.card.likes.length}</div>
+                    <div className="place__number-of-like">{card.likes.length}</div>
                 </div>
             </div>
         </li>

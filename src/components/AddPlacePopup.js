@@ -1,8 +1,8 @@
 import React from 'react';
 import PopupWithForm from './PopupWithForm'
 function AddPlacePopup(props) {
-    const [name, setName] = React.useState([]);
-    const [url, setUrl] = React.useState([]);
+    const [name, setName] = React.useState('');
+    const [url, setUrl] = React.useState('');
     function handleNameChange(e) {
         setName(e.target.value);
     }
@@ -16,9 +16,11 @@ function AddPlacePopup(props) {
             name: name,
             link: url
         });
+    }
+    React.useEffect(() => {
         setName('');
         setUrl('');
-    }
+    }, [props.isOpen]);
     return (
         <PopupWithForm name="add" title="Новое место" isOpen={props.isOpen} onClose={props.onClose} buttonText={"Создать"} onUpdateUser={props.onUpdateUser} onSubmit={handleSubmit}>
             <fieldset className="form__input-container form__input-container_type_add">
